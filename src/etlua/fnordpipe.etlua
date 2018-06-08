@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>fnord|paul</title>
+    <link rel="stylesheet" href="./css/fnordpipe.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+  </head>
+  <body>
+    <h1>fnordpipe<span>.org</span></h1>
+    <ul>
+      <li>github/<a href="https://github.com/fnordpipe">fnordpipe</a></li>
+      <li>github/<a href="https://github.com/esno">esno</a></li>
+    </ul>
+    <% for _, md in pairs(items) do %>
+      <div class="mdFile">
+        <%- md.content() %>
+        <div class="mdFileName"><%= md.file %></div>
+      </div>
+    <% end %>
+    <div id="meta">
+      <hr />
+      <p>This site was generated from my <a href="https://github.com/esno/knowledgebase">knowledgebase</a> utilizing <a href="https://github.com/esno/md2html">md2html</a></p>
+    </div>
+  <body>
+</html>

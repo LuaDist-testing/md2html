@@ -1,0 +1,66 @@
+#!/usr/bin/env lua
+
+local io = require('io')
+local os = require('os')
+local lfs = require('lfs')
+local markdown = require('discount')
+local etlua = require('etlua')
+
+local md2html = {
+  source = {}
+}
+
+function md2html.readSource(self, fileName)
+  local fd = io.open(fileName, 'r')
+  local content = fd:read('*a')
+  fd:close()
+  return markdown.compile(content).body
+end
+
+function md2html.readTemplate(self, template)
+  if lfs.attributes(template, 'mode') == 'file' then
+    local fd = io.open(template, 'r')
+    tpl = fd:read('*a')
+    fd:close()
+    return etlua.compile(tpl)
+  end
+  return nil
+end
+
+function md2html.scanSource(self, dir, src)
+  src = src or dir
+  for fileName in lfs.dir(dir) do
+    if fileName ~= '.' and
+        fileName ~= '..' and
+        string.sub(fileName, 1, 1) ~= '.' then
+      local filePath = dir .. '/' .. fileName
+      if lfs.attributes(filePath, 'mode') == 'directory' then
+        self:scanSource(filePath, src)
+      else
+        if filePath:match("^.+(%..+)$") == '.md' then
+          table.insert(self.source, {
+            file = string.gsub(filePath, src .. '/', ''),
+            content = function() return self:readSource(filePath) end
+          })
+        end
+      end
+    end
+  end
+end
+
+function md2html.run(self)
+  if not arg[1] or not arg[2] then
+    print('USAGE: ' .. arg[0] .. ' <tpl> <src>')
+    os.exit(1)
+  end
+
+  local tpl = arg[1]
+  local src = arg[2]
+
+  self:scanSource(src)
+  local template = self:readTemplate(tpl)
+  print(template({ items = self.source }))
+  template({ items = self.source })
+end
+
+md2html:run()
