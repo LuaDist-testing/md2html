@@ -1,7 +1,7 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "md2html"
-version = "0.0.1-0"
+version = "0.0.1-1"
 
 description = {
   summary = "markdown to html converter that embeds markdown content into a html template",
@@ -11,7 +11,7 @@ description = {
 
 -- LuaDist source
 source = {
-  tag = "0.0.1-0",
+  tag = "0.0.1-1",
   url = "git://github.com/LuaDist-testing/md2html.git"
 }
 -- Original source
@@ -32,4 +32,7 @@ build = {
   install = {
     bin = { "src/md2html" }
   },
+  copy_directories = {
+    ["md2html"] = "src/etlua"
+  }
 }
